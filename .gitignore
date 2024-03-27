@@ -1,0 +1,4 @@
+coverage.out
+.env
+*env*
+__*

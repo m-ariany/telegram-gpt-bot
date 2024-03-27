@@ -1,0 +1,7 @@
+.git
+.vscode
+.gitignore
+.env
+env.sh
+build.sh
+Dockerfile
