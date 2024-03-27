@@ -17,5 +17,5 @@ services:
       - REDIS_PASSWORD=yoursecurepassword
       - GILAS_API_KEY=<your_gilas.io_api_key>
       - TELEGRAM_API_KEY=<your_telegram_api_key>
-      - TELEGRAM_GROUP_ID:<Group ID which your bot should monitor>
+      - TELEGRAM_GROUP_ID=<Group ID which your bot should monitor>
       - TELEGRAM_MESSAGE_RATE_LIMIT=<Maximum number of messages to be anwered per user per day>
