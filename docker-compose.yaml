@@ -12,8 +12,6 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "8090:8090"
     environment: 
       - REDIS_ADDRESS=redis:6379
       - REDIS_PASSWORD=yoursecurepassword
