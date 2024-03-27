@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  
+  redis:
+    image: redis:7.2.4
+    command: redis-server --requirepass yoursecurepassword
+  
+  backend:
+    image: example/database
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8090:8090"
+    environment: 
+      - REDIS_ADDRESS=redis:6379
+      - REDIS_PASSWORD=yoursecurepassword
+      - GILAS_API_KEY=<your_gilas.io_api_key>
+      - TELEGRAM_API_KEY=<your_telegram_api_key>
+      - TELEGRAM_GROUP_ID:<Group ID which your bot should monitor>
+      - TELEGRAM_MESSAGE_RATE_LIMIT=<Maximum number of messages to be anwered per user per day>

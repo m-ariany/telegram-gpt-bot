@@ -5,7 +5,7 @@ COPY . .
 RUN go mod download
 RUN go test ./internal/...
 # Static build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o server ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o server main.go
 
 # Run layer
 FROM gcr.io/distroless/static:nonroot
