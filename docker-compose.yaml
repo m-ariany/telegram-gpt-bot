@@ -7,7 +7,7 @@ services:
     command: redis-server --requirepass yoursecurepassword
   
   backend:
-    image: example/database
+    image: gpt-telegram-bot
     build:
       context: .
       dockerfile: Dockerfile
