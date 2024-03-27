@@ -12,5 +12,4 @@ FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=build /app/server .
 USER nonroot:nonroot
-EXPOSE 8080
 ENTRYPOINT ["/server"]
