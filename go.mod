@@ -1,4 +1,4 @@
-module go-bot
+module github.com/learnllms/learngo-telegram-gpt-bot
 
 go 1.21.1
 

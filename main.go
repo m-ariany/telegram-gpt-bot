@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	"go-bot/internal/config"
-	"go-bot/internal/limiter"
-	"go-bot/internal/retry"
+	"github.com/learnllms/learngo-telegram-gpt-bot/internal/config"
+	"github.com/learnllms/learngo-telegram-gpt-bot/internal/limiter"
+	"github.com/learnllms/learngo-telegram-gpt-bot/internal/retry"
 
 	"github.com/go-redis/redis_rate/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
