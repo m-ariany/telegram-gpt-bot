@@ -15,6 +15,7 @@ type Gilas struct {
 
 type Telegram struct {
 	ApiKey           string `env:"TELEGRAM_API_KEY,required"`
+	BotName          string `env:"TELEGRAM_BOT_NAME,required"`
 	GroupId          int64  `env:"TELEGRAM_GROUP_ID,required"`
 	MessageRateLimit int    `env:"TELEGRAM_MESSAGE_RATE_LIMIT" envDefault:"2"`
 }

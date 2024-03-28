@@ -93,18 +93,22 @@ func main() {
 			}
 
 			go func() {
+
+				// We only want to look at messages that mention the bot.
+				if update.Message == nil || !strings.Contains(update.Message.Text, fmt.Sprintf("@%s", cnf.Telegram.BotName)) {
+					return
+				}
+
 				// Only answer messages from a specific group
-				if update.Message.Chat.ID != cnf.Telegram.GroupId {
+				if update.Message.Chat == nil || update.Message.Chat.ID != cnf.Telegram.GroupId {
 					return
 				}
 
-				// We only want to look at messages.
-				if update.Message == nil || len(strings.TrimSpace(update.Message.Text)) == 0 {
-					return
-				}
+				// Remove the bot name from the message
+				msgText := strings.ReplaceAll(update.Message.Text, fmt.Sprintf("@%s", cnf.Telegram.BotName), "")
 
-				// Only process messages that mention you.
-				if !strings.Contains(update.Message.Text, "@learngo_ai_bot") {
+				// Skip empty messages
+				if len(strings.TrimSpace(msgText)) == 0 {
 					return
 				}
 
@@ -114,7 +118,7 @@ func main() {
 				}
 
 				userId := strconv.FormatInt(update.Message.From.ID, 10)
-				result, err := messageRateLimiter.Allow(ctx, userId)
+				result, err := messageRateLimiter.Allow(ctx, userId) // Apply rate limit to the user
 				if err != nil {
 					return
 				}
@@ -138,7 +142,7 @@ func main() {
 
 				replyMessage := ""
 				if result.Allowed == 0 {
-					replyMessage = fmt.Sprintf("من حداکثر به %d از سوالات در روز جواب میدم 🙈 میلاااد کجایی؟", cnf.Telegram.MessageRateLimit)
+					replyMessage = fmt.Sprintf("من فقط به %d تا سوال هر نفر در روز جواب میدم 🙈 لطفا بقیه کمک کنن!", cnf.Telegram.MessageRateLimit)
 					chReply <- replyMessage
 				} else {
 					replyMessage = "یکم صبر کن الان جوابت رو میدم."
@@ -146,7 +150,7 @@ func main() {
 
 					c := gptClient.Clone()
 					c.Instruct(instructionMsg)
-					replyMessage, err = c.Prompt(ctx, update.Message.Text)
+					replyMessage, err = c.Prompt(ctx, msgText)
 					if err != nil {
 						replyMessage = "نشد که به Gilas.io .وصل شم😢 اگه بازم این اتفاق افتاد به میلاد خبر بدین."
 						log.Printf("failed to prompt the model %+v", err)
