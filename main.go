@@ -118,15 +118,14 @@ func main() {
 				}
 
 				userId := strconv.FormatInt(update.Message.From.ID, 10)
-				result, err := messageRateLimiter.Allow(ctx, userId) // Apply rate limit to the user
+				// Apply rate limit to the user
+				result, err := messageRateLimiter.Allow(ctx, userId)
 				if err != nil {
 					return
 				}
 
-				chReply := make(chan string, 2) // maximum 2 messages will be written on this channel
-				defer close(chReply)
-
-				go func(ch <-chan string) {
+				// replyFunc tries to reply to the user's message
+				replyFunc := func(ch <-chan string) {
 					retryHandler := retry.NewRetryHandler(time.Second, time.Millisecond*500, 5)
 					for replyMsg := range ch {
 						msg := tgbotapi.NewMessage(update.Message.Chat.ID, replyMsg)
@@ -139,25 +138,32 @@ func main() {
 							return nil
 						})
 					}
-				}(chReply)
+				}
+
+				chReply := make(chan string, 2) // maximum 2 messages will be written on this channel
+				defer close(chReply)
+
+				go replyFunc(chReply)
 
 				replyMessage := ""
+				// Check if user hitted the rate limit
 				if result.Allowed == 0 {
 					replyMessage = fmt.Sprintf("من فقط به %d تا سوال هر نفر در روز جواب میدم 🙈 لطفا بقیه کمک کنن!", cnf.Telegram.MessageRateLimit)
 					chReply <- replyMessage
-				} else {
-					replyMessage = "یکم صبر کن الان جوابت رو میدم."
-					chReply <- replyMessage
-
-					c := gptClient.Clone()
-					c.Instruct(instructionMsg)
-					replyMessage, err = c.Prompt(ctx, msgText)
-					if err != nil {
-						replyMessage = "نشد که به Gilas.io .وصل شم😢 اگه بازم این اتفاق افتاد به میلاد خبر بدین."
-						log.Printf("failed to prompt the model %+v", err)
-					}
-					chReply <- replyMessage
+					return
 				}
+
+				replyMessage = "یکم صبر کن الان جوابت رو میدم."
+				chReply <- replyMessage
+
+				c := gptClient.Clone()
+				c.Instruct(instructionMsg)
+				replyMessage, err = c.Prompt(ctx, msgText)
+				if err != nil {
+					replyMessage = "نشد که به Gilas.io .وصل شم😢 اگه بازم این اتفاق افتاد به میلاد خبر بدین."
+					log.Printf("failed to prompt the model %+v", err)
+				}
+				chReply <- replyMessage
 			}()
 		}
 	}
