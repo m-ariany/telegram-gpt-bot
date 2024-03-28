@@ -124,7 +124,8 @@ func main() {
 				}
 
 				chReply := make(chan string, 2) // maximum 2 messages will be written on this channel
-
+				defer close(chReply)
+				
 				go func(ch <-chan string) {
 					retryHandler := retry.NewRetryHandler(time.Second, time.Millisecond*500, 5)
 					for replyMsg := range ch {
@@ -157,8 +158,6 @@ func main() {
 					}
 					chReply <- replyMessage
 				}
-
-				close(chReply)
 			}()
 		}
 	}
