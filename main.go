@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/m-ariany/learngo-telegram-gpt-bot/internal/config"
-	"github.com/m-ariany/learngo-telegram-gpt-bot/internal/limiter"
-	"github.com/m-ariany/learngo-telegram-gpt-bot/internal/retry"
+	"github.com/m-ariany/telegram-gpt-bot/internal/config"
+	"github.com/m-ariany/telegram-gpt-bot/internal/limiter"
+	"github.com/m-ariany/telegram-gpt-bot/internal/retry"
 
 	"github.com/go-redis/redis_rate/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -125,7 +125,7 @@ func main() {
 
 				chReply := make(chan string, 2) // maximum 2 messages will be written on this channel
 				defer close(chReply)
-				
+
 				go func(ch <-chan string) {
 					retryHandler := retry.NewRetryHandler(time.Second, time.Millisecond*500, 5)
 					for replyMsg := range ch {

@@ -1,4 +1,4 @@
-module github.com/m-ariany/learngo-telegram-gpt-bot
+module github.com/m-ariany/telegram-gpt-bot
 
 go 1.21.1
 
