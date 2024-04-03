@@ -162,6 +162,7 @@ func main() {
 				if err != nil {
 					replyMessage = "نشد که به Gilas.io .وصل شم😢 اگه بازم این اتفاق افتاد به میلاد خبر بدین."
 					log.Printf("failed to prompt the model %+v", err)
+					return
 				}
 				chReply <- replyMessage
 			}()
